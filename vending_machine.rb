@@ -1,17 +1,22 @@
+# このコードをコピペしてrubyファイルに貼り付け、そのファイルをirbでrequireして実行しましょう。
+
+# 例
+
 # irb
 # require_relative '/Users/shibatadaiki/work_shiba/full_stack/sample.rb'
 # （↑のパスは、自動販売機ファイルが入っているパスを指定する）
-# 初期設定（自動販売機インスタンスを作成して、vmという変数に代入する）
-#vm = VendingMachine.new
-# 作成した自動販売機に100円を入れる
-#vm.slot_money (100)
-# 作成した自動販売機に入れたお金がいくらかを確認する（表示する）
-#vm.current_slot_money
-# 作成した自動販売機に入れたお金を返してもらう
-#vm.return_money
-#require_relative '/home/horiuchi/workspace/object/vending_machine.rb'
 
-# vm.juice_management
+# 初期設定（自動販売機インスタンスを作成して、vmという変数に代入する）
+vm = VendingMachine.new
+
+# 作成した自動販売機に100円を入れる
+vm.slot_money (100)
+
+# 作成した自動販売機に入れたお金がいくらかを確認する（表示する）
+vm.current_slot_money
+
+# 作成した自動販売機に入れたお金を返してもらう
+vm.return_money
 
 class VendingMachine
   # ステップ０　お金の投入と払い戻しの例コード
@@ -35,10 +40,9 @@ class VendingMachine
   # 10円玉、50円玉、100円玉、500円玉、1000円札を１つずつ投入できる。
   # 投入は複数回できる。
   def slot_money(money)
-    puts "#{money}を投入"
     # 想定外のもの（１円玉や５円玉。千円札以外のお札、そもそもお金じゃないもの（数字以外のもの）など）
     # が投入された場合は、投入金額に加算せず、それをそのまま釣り銭としてユーザに出力する。
-    return puts "#{money}を返却します。" unless MONEY.include?(money)
+    return false unless MONEY.include?(money)
     # 自動販売機にお金を入れる
     @slot_money += money
   end
@@ -50,16 +54,4 @@ class VendingMachine
     # 自動販売機に入っているお金を0円に戻す
     @slot_money = 0
   end
-
-  def juice_management
-    juice = {coke: {price: 120, stock: 5}, water: {price: 100, stock: 10}}
-    (0...juice.length).each do |i|
-        puts "#{juice.keys[i]}は#{juice.values[i][:price]}円で在庫は#{juice.values[i][:stock]}本です。"
-    end
-  end
-
-  def purchase(juice)
-  end
-
-  
 end
