@@ -1,18 +1,3 @@
-# irb
-# require_relative '/Users/shibatadaiki/work_shiba/full_stack/sample.rb'
-# （↑のパスは、自動販売機ファイルが入っているパスを指定する）
-# 初期設定（自動販売機インスタンスを作成して、vmという変数に代入する）
-#vm = VendingMachine.new
-# 作成した自動販売機に100円を入れる
-#vm.slot_money (100)
-# 作成した自動販売機に入れたお金がいくらかを確認する（表示する）
-#vm.current_slot_money
-# 作成した自動販売機に入れたお金を返してもらう
-#vm.return_money
-#require_relative '/home/horiuchi/workspace/object/vending_machine.rb'
-
-# vm.juice_management
-
 class VendingMachine
   # ステップ０　お金の投入と払い戻しの例コード
   # ステップ１　扱えないお金の例コード
@@ -61,5 +46,5 @@ class VendingMachine
   def purchase(juice)
   end
 
-  
+
 end
