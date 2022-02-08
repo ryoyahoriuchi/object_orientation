@@ -1,13 +1,29 @@
-def purchasable?(juice)
-  if @juices[juice]
-    @juices[juice][:stock] !=0 && @juices[juice][:price] <= @amount_money
-  else
-    false
+
+
+class Juice
+  attr_reader :name, :price
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def to_s
+    "name: #{@name}, price: #{@price}"
+  end
+
+  def to_h
+    {name: @name, price: @price}
+  end
+
+  def self.coke
+    Juice.new("コーラ", 120)
+  end
+
+  def self.water
+    self.new("水", 100)
   end
 end
-vm.purchasable?(:coke)
-vm.purchasable?(:water)
-vm.purchasable?("coke")
-@juices[:water] -> nil
-@juices[:water][:stock] -> error
-@juices[:water][:name] -> error
+
+puts coke = Juice.coke
+puts water = Juice.water
+puts coke.to_h

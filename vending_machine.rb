@@ -44,10 +44,25 @@ class VendingMachine
   end
 
   def purchasable?(juice)
+    juice = juice.to_sym
     if @juices[juice]
       @juices[juice][:stock] !=0 && @juices[juice][:price] <= @amount_money
     else
       false
+    end
+  end
+
+  def purchasable_list
+    #購入可能なドリンクのリストを出す。戻り値：Array [:coke, :water]
+    @juices.keys.select{|juice| purchasable?(juice)}
+  end
+
+  def store(juice, name, price, stock)
+    # @juicesに追加される　戻り値なし
+    if @juices[juice.to_sym]
+      @juices[juice.to_sym][:stock] += stock
+    else
+      @juices[juice.to_sym] = {name: name, price: price, stock: stock}
     end
   end
 
@@ -63,18 +78,32 @@ end
 
 if __FILE__ == $0
   vm = VendingMachine.new
-  vm.juice_management
+  # vm.juice_management
   vm.insert_money 100
   vm.insert_money 10
   vm.insert_money 10
-  vm.purchase(:coke)
-  puts vm.amount_money
-  puts vm.sale_amount
-  puts vm.juice_management
-
+  # vm.purchase(:coke)
+  # puts vm.amount_money
+  # puts vm.sale_amount
+  vm.juice_management
+  vm.store(:water, "水", 100, 5)
+  vm.juice_management
+  vm.store(:coke, "コーラ", 120, 5)
+  vm.juice_management
+  vm.store(:water, "水", 100, 5)
+  vm.juice_management
+  p vm.purchasable_list
   # return vm.purchasable?(:cola)
   # # -> true, false
   # return vm.purchase(:cola) # <- purchasableを使う
   # # -> true, false
+
+# ジュースを3種類管理できるようにする。
+
+# 在庫にレッドブル（値段:200円、名前”レッドブル”）5本を追加する。
+
+# 在庫に水（値段:100円、名前”水”）5本を追加する。
+
+# 投入金額、在庫の点で購入可能なドリンクのリストを取得できる。
 
 end
