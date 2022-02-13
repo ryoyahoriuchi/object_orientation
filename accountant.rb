@@ -4,7 +4,7 @@ class Accountant
   def initialize(cache, stock)
     @cache = cache
     @stock = stock
-    @juices = stock.juices
+    @juices = stock.juices # 本来こちらで持つべきではない
   end
 
   # 投入金額の総計取得用
@@ -21,7 +21,7 @@ class Accountant
   # 使用できるお金であれ投入金額に加算
   # 想定外のものは投入金額に加算せず、returnする
   def insert_money(money)
-    return money unless Cache::MONEY.include?(money)
+    return money unless Cache::MONEY.include?(money) # これもcacheにmethod useful?とか作れば良いかも
     @cache.amount_money += money
     return
   end
@@ -34,7 +34,7 @@ class Accountant
   end
 
   # 投入金額、在庫の点で、購入できるかboolean型で返す
-  def purchasable?(juice)
+  def purchasable?(juice) #これは、stockにmethodを作った方が良いかも。
     juice = juice.to_sym
     if @juices[juice]
       @juices[juice][:stock] > 0 && @juices[juice][:price] <= @cache.amount_money
