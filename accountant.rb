@@ -34,7 +34,7 @@ class Accountant
   end
 
   # 投入金額、在庫の点で、購入できるかboolean型で返す
-  def purchasable?(juice) #これは、stockにmethodを作った方が良いかも。
+  def purchasable?(juice)
     juice = juice.to_sym
     if @juices[juice]
       @juices[juice][:stock] > 0 && @juices[juice][:price] <= @cache.amount_money
