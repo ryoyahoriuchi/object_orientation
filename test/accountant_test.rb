@@ -1,0 +1,91 @@
+require "minitest/autorun"
+require_relative "../accountant.rb"
+require_relative "../cache.rb"
+require_relative "../juice.rb"
+# require_relative "../stock.rb"
+require_relative "../vending_machine.rb"
+
+class Accountant_Test < Minitest::Test
+  def setup
+    @cache = Cache.new
+    @stock = Stock.new
+    @accountant = Accountant.new(@cache, @stock)
+  end
+
+  def test_add_amount_money_when_corect_money_insert
+    assert_nil @accountant.insert_money(100)
+    assert_equal 100, @accountant.amount_money
+  end
+
+  def test_refound_money_when_refound
+    @accountant.insert_money(100)
+    assert_equal 100, @accountant.refund_money
+    assert_equal 0, @accountant.amount_money
+  end
+
+  def test_return_money_when_incorrect_money_insert
+    assert_equal 20, @accountant.insert_money(20)
+    assert_equal 0, @accountant.amount_money
+  end
+
+  def test_parchasable_when_enough_amount_money
+    @accountant.insert_money(100)
+    2.times{ @accountant.insert_money(10) }
+    assert @accountant.purchasable?(:coke)
+  end
+  def test_parchasable_when_not_enough_amount_money
+    @accountant.insert_money(100)
+    assert !@accountant.purchasable?(:coke)
+  end
+  def test_parchasable_when_not_enough_juice
+    @accountant.insert_money(100)
+    2.times{ @accountant.insert_money(10) }
+    @stock.juices[:coke][:stock] = 0
+    assert !@accountant.purchasable?(:coke)
+  end
+
+  def test_parchase_when_enough_ammuont_money_and_enough_juice
+    juice = :coke
+    @accountant.insert_money(100)
+    3.times{ @accountant.insert_money(10) }
+    # 購入前
+    assert_equal 130, @accountant.amount_money
+    assert_equal 0, @accountant.sale_amount
+    assert_equal 5, @stock.juices[juice][:stock]
+    # 購入後
+    assert_equal 10, @accountant.purchase(juice)
+    assert_equal 0, @accountant.amount_money
+    assert_equal 120, @accountant.sale_amount
+    assert_equal 4, @stock.juices[juice][:stock]
+  end
+
+  def test_parchase_when_not_enough_ammuont_money_and_enough_juice
+    juice = :coke
+    @accountant.insert_money(100)
+    # 購入前
+    assert_equal 100, @accountant.amount_money
+    assert_equal 0, @accountant.sale_amount
+    assert_equal 5, @stock.juices[juice][:stock]
+    # 購入後
+    assert_nil @accountant.purchase(juice)
+    assert_equal 100, @accountant.amount_money
+    assert_equal 0, @accountant.sale_amount
+    assert_equal 5, @stock.juices[juice][:stock]
+  end
+
+  def test_parchase_when_enough_ammuont_money_and_not_enough_juice
+    juice = :coke
+    @accountant.insert_money(100)
+    2.times{ @accountant.insert_money(10) }
+    @stock.juices[:coke][:stock] = 0
+    # 購入前
+    assert_equal 120, @accountant.amount_money
+    assert_equal 0, @accountant.sale_amount
+    assert_equal 0, @stock.juices[juice][:stock]
+    # 購入後
+    assert_nil @accountant.purchase(juice)
+    assert_equal 120, @accountant.amount_money
+    assert_equal 0, @accountant.sale_amount
+    assert_equal 0, @stock.juices[juice][:stock]
+  end
+end
