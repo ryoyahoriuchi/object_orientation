@@ -2,7 +2,7 @@ class JuiceManager
 
   # 初期設定
   def initialize
-    @juices = {coke: {name: "コーラ", price: 120, stock: 5},water: {name: "水", price: 100, stock: 5},redbull: {name: "redbull", price:200, stock: 5}}
+    @juices = {coke: {name: "コーラ", price: 120, stock: 5},water: {name: "水", price: 100, stock: 5},redbull: {name: "レッドブル", price:200, stock: 5}}
   end
 
   # 引数juiceの在庫を引数store_number格納する / 戻り値：hash
