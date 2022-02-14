@@ -42,6 +42,11 @@ class Accountant_Test < Minitest::Test
     @juice_manager.juices[:coke][:stock] = 0
     assert !@accountant.purchasable?(:coke)
   end
+  def test_parchasable_when_not_such_juice
+    @accountant.insert_money(100)
+    2.times{ @accountant.insert_money(10) }
+    assert !@accountant.purchasable?(:water)
+  end
 
   def test_parchase_when_enough_ammuont_money_and_enough_juice
     juice = :coke
