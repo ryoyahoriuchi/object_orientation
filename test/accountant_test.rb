@@ -1,8 +1,8 @@
 require "minitest/autorun"
 require_relative "../accountant.rb"
-# require_relative "../cash.rb"
-# require_relative "../juice_manager.rb"
-# require_relative "../vending_machine.rb"
+require_relative "../cash.rb"
+require_relative "../juice_manager.rb"
+require_relative "../vending_machine.rb"
 
 class Accountant_Test < Minitest::Test
   def setup

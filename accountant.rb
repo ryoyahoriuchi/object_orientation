@@ -60,60 +60,60 @@ class Accountant
 end
 
 # 以下はテスト用に作った仮のクラス
-class Cash
-  attr_accessor :amount_money, :sale_amount
-  MONEY = [10, 50, 100, 500, 1000].freeze
+# class Cash
+#   attr_accessor :amount_money, :sale_amount
+#   MONEY = [10, 50, 100, 500, 1000].freeze
 
-  def initialize
-    @amount_money = 0
-    @sale_amount = 0
-  end
+#   def initialize
+#     @amount_money = 0
+#     @sale_amount = 0
+#   end
 
-  def useful?(money)
-    MONEY.include?(money)
-  end
-end
+#   def useful?(money)
+#     MONEY.include?(money)
+#   end
+# end
 
 
-class JuiceManager
-  attr_accessor :juices
+# class JuiceManager
+#   attr_accessor :juices
 
-  def initialize
-    @juices = {coke: {price: 120, stock: 5}}
-  end
+#   def initialize
+#     @juices = {coke: {price: 120, stock: 5}}
+#   end
 
-  def purchasable?(juice, money)
-    juice = juice.to_sym
-    if @juices[juice]
-      @juices[juice][:stock] > 0 && @juices[juice][:price] <= money
-    else
-      false
-    end
-  end
+#   def purchasable?(juice, money)
+#     juice = juice.to_sym
+#     if @juices[juice]
+#       @juices[juice][:stock] > 0 && @juices[juice][:price] <= money
+#     else
+#       false
+#     end
+#   end
 
-  def purchasable_list(money)
-    @juices.keys.select{|juice| purchasable?(juice, money)}
-  end
+#   def purchasable_list(money)
+#     @juices.keys.select{|juice| purchasable?(juice, money)}
+#   end
 
-  def store(juice, price, count)
-    if @juices[juice]
-      @juices[juice][:stock] += count
-    else
-      @juices[juice] = {price: price, stock: count}
-    end
-  end
+#   def store(juice, price, count)
+#     if @juices[juice]
+#       @juices[juice][:stock] += count
+#     else
+#       @juices[juice] = {price: price, stock: count}
+#     end
+#   end
 
-  def stock(juice)
-    @juices[juice][:stock] if @juices[juice]
-  end
+#   def stock(juice)
+#     @juices[juice][:stock] if @juices[juice]
+#   end
 
-  def retrieve(juice)
-    juice = juice.to_sym
-    @juices[juice][:stock] -= 1 if self.stock(juice)
-  end
+#   def retrieve(juice)
+#     juice = juice.to_sym
+#     @juices[juice][:stock] -= 1 if self.stock(juice)
+#   end
 
-  def price(juice)
-    juice = juice.to_sym
-    @juices[juice][:price] if self.stock(juice)
-  end
-end
+#   def price(juice)
+#     juice = juice.to_sym
+#     @juices[juice][:price] if self.stock(juice)
+#   end
+# end
