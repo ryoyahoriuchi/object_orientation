@@ -1,74 +1,66 @@
 class Accountant
 
-  # cacheクラスとstockクラスを初期値にセット
-  def initialize(cache, stock)
-    @cache = cache
-    @stock = stock
-    @juices = stock.juices # 本来こちらで持つべきではない
+  # cashクラスとstockクラスを初期値にセット
+  def initialize(cash, juice_manager)
+    @cash = cash
+    @juice_manager = juice_manager
+    # @juices = stock.juices # 本来こちらで持つべきではない
   end
 
   # 投入金額の総計取得用
   def amount_money
-    @cache.amount_money
+    @cash.amount_money
   end
 
   # 売上金額の取得用
   def sale_amount
-    @cache.sale_amount
+    @cash.sale_amount
   end
 
   # 投入操作
   # 使用できるお金であれ投入金額に加算
   # 想定外のものは投入金額に加算せず、returnする
   def insert_money(money)
-    return money unless Cache::MONEY.include?(money) # これもcacheにmethod useful?とか作れば良いかも
-    @cache.amount_money += money
+    return money unless @cash.useful?(money) # これもcashにmethod useful?とか作れば良いかも
+    @cash.amount_money += money
     return
   end
 
   # 払い戻し操作
   #（投入金額を釣り銭として出力し、投入金額を0にする）
   def refund_money
-    temp, @cache.amount_money = @cache.amount_money, 0
+    temp, @cash.amount_money = @cash.amount_money, 0
     temp
   end
 
   # 投入金額、在庫の点で、購入できるかboolean型で返す
   def purchasable?(juice)
-    juice = juice.to_sym
-    if @juices[juice]
-      @juices[juice][:stock] > 0 && @juices[juice][:price] <= @cache.amount_money
-    else
-      false
-    end
+    @juice_manager.purchasable?(juice, @cash.amount_money)
   end
 
 
   # 購入できる場合は、ジュースとお釣りを返す
   def purchase(juice)
+    juice = juice.to_sym
     if self.purchasable?(juice)
-      juice = juice.to_sym
-      price = @juices[juice][:price]
-      @cache.amount_money -= price
-      @cache.sale_amount += price
-      # stockにretrieveメソッドを作るのはどうだろう。
-      # retrieve(juice)で値段が取得でき、在庫が１つ減る。もしなければnilを返す
-      @juices[juice][:stock] -= 1
-
-      # お釣りをreturnする
+      price = @juice_manager.price(juice)
+      @juice_manager.retrieve(juice)
+      @cash.amount_money -= price
+      @cash.sale_amount += price
       self.refund_money
     end
   end
 
   # 購入可能なドリンクのリストを出す。戻り値：Array [:coke, :water]
   # これはstockのメソッドとして作った方が良い引数にamonut_moneyを入れる
-  def purchasable_list
-    @juices.keys.select{|juice| purchasable?(juice)}
+  def purchasable_list(money)
+    @juice_manager.purchasable_list(money)
   end
+
 end
 
 # 以下はテスト用に作った仮のクラス
-class Cache
+class Cash
   attr_accessor :amount_money, :sale_amount
   MONEY = [10, 50, 100, 500, 1000].freeze
 
@@ -76,13 +68,52 @@ class Cache
     @amount_money = 0
     @sale_amount = 0
   end
+
+  def useful?(money)
+    MONEY.include?(money)
+  end
 end
 
 
-class Stock
+class JuiceManager
   attr_accessor :juices
 
   def initialize
-    @juices = {coke: {name: "コーラ", price: 120, stock: 5}}
+    @juices = {coke: {price: 120, stock: 5}}
+  end
+
+  def purchasable?(juice, money)
+    juice = juice.to_sym
+    if @juices[juice]
+      @juices[juice][:stock] > 0 && @juices[juice][:price] <= money
+    else
+      false
+    end
+  end
+
+  def purchasable_list(money)
+    @juices.keys.select{|juice| purchasable?(juice, money)}
+  end
+
+  def store(juice, price, count)
+    if @juices[juice]
+      @juices[juice][:stock] += count
+    else
+      @juices[juice] = {price: price, stock: count}
+    end
+  end
+
+  def stock(juice)
+    @juices[juice][:stock] if @juices[juice]
+  end
+
+  def retrieve(juice)
+    juice = juice.to_sym
+    @juices[juice][:stock] -= 1 if self.stock(juice)
+  end
+
+  def price(juice)
+    juice = juice.to_sym
+    @juices[juice][:price] if self.stock(juice)
   end
 end
