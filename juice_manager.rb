@@ -7,7 +7,16 @@ class JuiceManager
 
   # 引数juiceの在庫を引数store_number格納する / 戻り値：hash
   def store(juice,store_number)
-    @juices[juice.to_sym][:stock] += store_number
+    if @juices.has_key?(juice)
+      @juices[juice.to_sym][:stock] += store_number
+    else
+      false
+    end
+  end
+
+  #商品追加
+  def juice_add(juice,name,price,stock)
+    @juices[juice.to_sym] = {name: name, price: price, stock: stock}
   end
 
   # 引数juiceの在庫数 / 戻り値：integer
@@ -43,5 +52,11 @@ class JuiceManager
   # 商品があるかどうか / 戻り値：true,false
   # 商品を追加する
 
+end
 
+if __FILE__ == $0
+  jm = JuiceManager.new
+  jm.store(:coke,10)
+  jm.juice_add(:orange,"オレンジ",150,10)
+  p jm.price(:coke)
 end
