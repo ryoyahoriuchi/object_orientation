@@ -39,13 +39,13 @@ class Accountant_Test < Minitest::Test
   def test_parchasable_when_not_enough_juice
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
-    @juice_manager.juices[:coke][:stock] = 0
+    5.times { @juice_manager.retrieve(:coke) }
     assert !@accountant.purchasable?(:coke)
   end
   def test_parchasable_when_not_such_juice
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
-    assert !@accountant.purchasable?(:water)
+    assert !@accountant.purchasable?(:grapejuice)
   end
 
   def test_parchase_when_enough_ammuont_money_and_enough_juice
@@ -81,7 +81,7 @@ class Accountant_Test < Minitest::Test
     juice = :coke
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
-    @juice_manager.juices[:coke][:stock] = 0
+    5.times { @juice_manager.retrieve(:coke) }
     # 購入前
     assert_equal 120, @accountant.amount_money
     assert_equal 0, @accountant.sale_amount
