@@ -4,7 +4,6 @@ class Accountant
   def initialize(cash, juice_manager)
     @cash = cash
     @juice_manager = juice_manager
-    # @juices = stock.juices # 本来こちらで持つべきではない
   end
 
   # 投入金額の総計取得用
@@ -21,7 +20,7 @@ class Accountant
   # 使用できるお金であれ投入金額に加算
   # 想定外のものは投入金額に加算せず、returnする
   def insert_money(money)
-    return money unless @cash.useful?(money) # これもcashにmethod useful?とか作れば良いかも
+    return money unless @cash.useful?(money)
     @cash.amount_money += money
     return
   end
@@ -41,7 +40,6 @@ class Accountant
 
   # 購入できる場合は、ジュースとお釣りを返す
   def purchase(juice)
-    juice = juice.to_sym
     if self.purchasable?(juice)
       price = @juice_manager.price(juice)
       @juice_manager.retrieve(juice)
@@ -51,8 +49,7 @@ class Accountant
     end
   end
 
-  # 購入可能なドリンクのリストを出す。戻り値：Array [:coke, :water]
-  # これはstockのメソッドとして作った方が良い引数にamonut_moneyを入れる
+  # 購入可能なドリンクのリストを出す。
   def purchasable_list(money)
     @juice_manager.purchasable_list(money)
   end
