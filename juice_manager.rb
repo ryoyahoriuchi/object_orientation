@@ -8,34 +8,34 @@ class JuiceManager
   # 引数juiceの在庫を引数store_number格納する / 戻り値：hash
   def store(juice,price,stock)
     juice = juice.to_sym
-    if @juices.has_key?(juice)
+    if @juices[juice]
       @juices[juice][:stock] += stock
     else
       @juices[juice] = {price: price, stock: stock}
     end
   end
 
-  #商品追加
-  # def juice_add(juice,name,price,stock)
-  #   @juices[juice.to_sym] = {name: name, price: price, stock: stock}
-  # end
+  # 引数juiceが存在するかどうか / 戻り値：true,false
+  def exist?(juice)
+    @juices.has_key?(juice)
+  end
 
   # 引数juiceの在庫数 / 戻り値：integer
   def stock(juice)
     juice = juice.to_sym
-    @juices[juice][:stock] if @juices[juice]
+    @juices[juice][:stock] if self.exist?(juice)
   end
 
   # 引数juiceの価格 / 戻り値：integer
   def price(juice)
     juice = juice.to_sym
-    @juices[juice][:price] if @juices[juice]
+    @juices[juice][:price] if self.exist?(juice)
   end
 
   # 引数juiceが買えるかどうか / 戻り値：true,false
   def purchasable?(juice,money)
     juice = juice.to_sym
-    self.stock(juice) > 0 && self.price(juice) <= money
+    self.stock(juice) > 0 && self.price(juice) <= money if self.exist?(juice)
   end
 
   # 買えるドリンクのリスト / 戻り値：array 例：[:coke,:water]
@@ -47,9 +47,6 @@ class JuiceManager
   def retrieve(juice)
     @juices[juice.to_sym][:stock] -= 1
   end
-
-  # 商品があるかどうか / 戻り値：true,false
-  # 商品を追加する
 
 end
 
