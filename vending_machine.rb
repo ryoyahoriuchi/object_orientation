@@ -95,3 +95,5 @@ class VendingMachine
     @accountant.sale_amount
   end
 end
+
+VendingMachine.start
