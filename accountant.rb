@@ -20,9 +20,13 @@ class Accountant
   # 使用できるお金であれ投入金額に加算
   # 想定外のものは投入金額に加算せず、returnする
   def insert_money(money)
-    return money unless @cash.useful?(money)
-    @cash.amount_money += money
-    return
+    money_i = money.to_i
+    if money_i.to_s == money.to_s && @cash.useful?(money_i)
+      @cash.amount_money += money_i
+      return
+    else
+      return money
+    end
   end
 
   # 払い戻し操作
