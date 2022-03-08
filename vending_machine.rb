@@ -1,109 +1,117 @@
+require_relative "./accountant.rb"
+require_relative "./juice_manager.rb"
+require_relative "./cash.rb"
+
 class VendingMachine
-  attr_reader :amount_money, :sale_amount
-  # ステップ０　お金の投入と払い戻しの例コード
-  # ステップ１　扱えないお金の例コード
+  @cash = Cash.new
+  @juice_manager = JuiceManager.new
+  @accountant = Accountant.new(@cash, @juice_manager)
 
-  # 10円玉、50円玉、100円玉、500円玉、1000円札を１つずつ投入できる。
-  MONEY = [10, 50, 100, 500, 1000].freeze
-
-  # （自動販売機に投入された金額をインスタンス変数の @insert_money に代入する）
-  def initialize
-    # 最初の自動販売機に入っている金額は0円
-    @amount_money = 0
-    @sale_amount = 0
-    @juices = {coke: {name: "コーラ", price: 120, stock: 5}}
+  def self.start
+    while true
+      puts "あなたは何をするか決めてください"
+      puts "1:購入、2:管理業務"
+      action = gets.chomp.to_s
+      if ["1", "2"].include?(action)
+        if action == "1"
+          choice
+        else
+          management
+        end
+        return
+      else
+        puts "1か2を選択下さい"
+      end
+    end  
   end
 
-  # 10円玉、50円玉、100円玉、500円玉、1000円札を１つずつ投入できる。
-  # 投入は複数回できる。
-  def insert_money(money)
-    # puts "#{money}を投入"
-    # 想定外のもの（１円玉や５円玉。千円札以外のお札、そもそもお金じゃないもの（数字以外のもの）など）
-    # が投入された場合は、投入金額に加算せず、それをそのまま釣り銭としてユーザに出力する。
-    return puts "#{money}を返却します。" unless MONEY.include?(money)
-    # 自動販売機にお金を入れる
-    @amount_money += money
-  end
-
-  # 払い戻し操作を行うと、投入金額の総計を釣り銭として出力する。
-  def refund_money
-    # 返すお金の金額を表示する
-    puts @amout_money
-    # 自動販売機に入っているお金を0円に戻す
-    @amout_money = 0
-  end
-
-  def juice_management
-    # (0...@juices.length).each do |i|
-    #     puts "#{juices.keys[i]}は#{juices.values[i][:price]}円で在庫は#{juice.values[i][:stock]}本です。"
-    # end
-    @juices.each do |key,hash|
-      puts "#{hash[:name]}は#{hash[:price]}円で在庫は#{hash[:stock]}本です。"
+  def self.choice
+    while true
+      puts "何をしますか？"
+      puts "1:お金を投入、2:払い戻し、3:購入する"
+      puts "購入可能リスト"
+      p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
+      action = gets.chomp.to_s
+      ["1", "2", "3"].include?(action)
+      if action == "1"
+        insert
+      elsif action == "2"
+        puts "#{@accountant.amount_money}円を返却します。"
+        return @accountant.refund_money
+      elsif action == "3"
+        return purchase
+      else
+        puts "1～3を選択ください"
+      end
     end
-
   end
 
-  def purchasable?(juice)
-    juice = juice.to_sym
-    if @juices[juice]
-      @juices[juice][:stock] !=0 && @juices[juice][:price] <= @amount_money
+  def self.management
+    while true
+      puts "何をしますか？"
+      puts "1:商品追加、2:商品リスト表示、3:終了"
+      action = gets.chomp.to_s
+      ["1", "2", "3"].include?(action)
+      if action == "1"
+        addition
+      elsif action == "2"
+        puts @juice_manager.juices #ジュースリスト表示メソッドをここに入れる
+      elsif action == "3"
+        return puts "終了します。"
+      else
+        puts "1～3を選択ください"
+      end
+    end
+  end
+
+  def self.insert
+    puts "投入金額を決めてください。"
+    puts "対応可能硬貨： #{Cash::MONEY}"
+    money = gets.chomp
+    a = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
+    puts "#{a}の不正投入がありました" if a 
+    # if 不正投入があったとき "#{money}の不正投入がありましたので返却します。"と書きたい
+  end
+
+  def self.purchase
+    puts "購入可能リストは下記の通りです。"
+    p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
+    puts "何を購入しますか？"
+    juice = gets.chomp
+    if @accountant.purchasable?(juice)
+      change = @accountant.purchase(juice)
+      puts "#{juice}を購入しました"
+      puts "おつりは#{change}円です"
     else
-      false
+      puts "購入できません"
+      choice
     end
   end
 
-  def purchasable_list
-    #購入可能なドリンクのリストを出す。戻り値：Array [:coke, :water]
-    @juices.keys.select{|juice| purchasable?(juice)}
-  end
-
-  def store(juice, name, price, stock)
-    # @juicesに追加される　戻り値なし
-    if @juices[juice.to_sym]
-      @juices[juice.to_sym][:stock] += stock
-    else
-      @juices[juice.to_sym] = {name: name, price: price, stock: stock}
+  def self.addition
+    puts "何のジュースを追加しますか？"
+    juice = gets.chomp
+    puts "何円に設定しますか？"
+    pricing = true
+    while pricing
+      price = gets.to_i
+      if price == 0
+        puts "不正な金額です。数値で入力ください"
+      else
+        pricing = false
+      end
     end
-  end
-
-  def purchase(juice)
-    if self.purchasable?(juice)
-      buy_juice = @juices[:"#{juice}"][:price]
-      @amount_money -= buy_juice
-      @sale_amount += buy_juice
-      @juices[:"#{juice}"][:stock] -= 1
+    replenishment = true
+    puts "何本格納しますか？"
+    while replenishment
+      stock = gets.to_i
+      if stock == 0
+        puts "不正な本数です。数値で入力ください"
+      else
+        replenishment = false
+      end
     end
+    @juice_manager.store(juice, price, stock)
+    puts "#{juice}を#{price}円で#{stock}本追加しました"
   end
-end
-
-if __FILE__ == $0
-  vm = VendingMachine.new
-  # vm.juice_management
-  vm.insert_money 100
-  vm.insert_money 10
-  vm.insert_money 10
-  # vm.purchase(:coke)
-  # puts vm.amount_money
-  # puts vm.sale_amount
-  vm.juice_management
-  vm.store(:water, "水", 100, 5)
-  vm.juice_management
-  vm.store(:coke, "コーラ", 120, 5)
-  vm.juice_management
-  vm.store(:water, "水", 100, 5)
-  vm.juice_management
-  p vm.purchasable_list
-  # return vm.purchasable?(:cola)
-  # # -> true, false
-  # return vm.purchase(:cola) # <- purchasableを使う
-  # # -> true, false
-
-# ジュースを3種類管理できるようにする。
-
-# 在庫にレッドブル（値段:200円、名前”レッドブル”）5本を追加する。
-
-# 在庫に水（値段:100円、名前”水”）5本を追加する。
-
-# 投入金額、在庫の点で購入可能なドリンクのリストを取得できる。
-
 end
