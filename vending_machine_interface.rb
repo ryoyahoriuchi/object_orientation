@@ -15,7 +15,7 @@ class VendingMachine
     if role == 1 # 購入者
       purchase_step
     elsif role == 2 # 管理者
-
+      management_step
     end
   end
 
@@ -28,7 +28,7 @@ class VendingMachine
     when :role
       list = %w[購入者 管理者]
       message = "該当する数字を入力して下さい。"
-    when :action
+    when :accountant_action
       list = %w[お金を投入 払い戻し 購入する]
       message = "何をしますか?下記より数字を選択して下さい。"
     when :juice
@@ -38,6 +38,12 @@ class VendingMachine
       list = Cash::MONEY
       message = "使用できるお金は以下の通りです。\nお金を入力して下さい"
       no_number = true
+    when :management_action
+      list = %w[商品追加 商品在庫確認 売上確認 終了]
+      message = "何をしますか?\n数字を選択して下さい。"
+    when :store_confirm
+      list = %w[yes no]
+      message = "間違いありませんか?\n数字を選択して下さい。"
     end
     [list, message, no_number]
   end
@@ -51,7 +57,7 @@ class VendingMachine
         list.map.with_index{|select, i| "#{i+1}: #{select}"}.join(", ")
       end
     puts list_message
-    gets.chomp.tr("１-１０００", "1-1000")
+    gets.chomp.tr("１２３４５６７８９０", "1234567890")
   end
 
   # 引数actinによって、選択するリスト
@@ -76,8 +82,8 @@ class VendingMachine
   end
 
   def purchase_step
-    action = choose(:action)
     while true
+      action = choose(:accountant_action)
       case action
       when 1
         money = choose(:insert)
@@ -110,6 +116,34 @@ class VendingMachine
     end
   end
 
+  def management_step
+    while true
+      action = choose(:management_action)
+      case action
+      when 1
+        confirm = 2
+        while confirm != 1
+          puts "商品名、価格、本数をスペース区切りで半角英数字で入力して下さい。"
+          @juice = gets.chomp.split(/ |　/)
+          @juice = @juice.map.with_index{|j,i| i == 0 ? j : j.to_i}
+          puts "追加する商品名、価格、本数は以下の通りです？"
+          puts @juice.join(" ")
+          confirm = choose(:store_confirm)
+        end
+        @juice_manager.store(*@juice)
+        puts "#{@juice[0]}を#{@juice[2]}本追加しました。"
+        puts "在庫状況は以下の通りです。"
+      when 2
+        #商品在庫確認
+        puts "在庫表示"
+      when 3
+        puts "売上は¥#{@accountant.sale_amount}です。"
+      when 4
+        puts "終了します。"
+        break
+      end
+    end
+  end
 end
 
 # if __FILE__ == $0
