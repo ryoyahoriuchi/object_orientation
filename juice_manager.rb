@@ -8,6 +8,8 @@ class JuiceManager
   # 引数juiceの在庫を引数store_number格納する / 戻り値：hash
   def store(juice,price,stock)
     juice = juice.to_sym
+    price = price.to_i
+    stock = stock.to_i
     if @juices[juice]
       @juices[juice][:stock] += stock
     else
@@ -17,6 +19,7 @@ class JuiceManager
 
   # 引数juiceが存在するかどうか / 戻り値：true,false
   def exist?(juice)
+    juice = juice.to_sym
     @juices.has_key?(juice)
   end
 
@@ -24,6 +27,12 @@ class JuiceManager
   def stock(juice)
     juice = juice.to_sym
     @juices[juice][:stock] if self.exist?(juice)
+  end
+
+  # 全商品の在庫確認
+  def stock_all
+    juices = @juices.map {|k, v| "#{k}: #{v[:stock]}本"}
+    juices.join(',')
   end
 
   # 引数juiceの価格 / 戻り値：integer
@@ -52,7 +61,5 @@ end
 
 if __FILE__ == $0
   jm = JuiceManager.new
-  jm.store(:coke,10)
-  jm.juice_add(:orange,"オレンジ",150,10)
-  p jm.price(:coke)
+  puts jm.stock_all
 end
