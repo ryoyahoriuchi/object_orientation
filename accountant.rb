@@ -20,9 +20,8 @@ class Accountant
   # 使用できるお金であれ投入金額に加算
   # 想定外のものは投入金額に加算せず、returnする
   def insert_money(money)
-    money_i = money.to_i
-    if money_i.to_s == money.to_s && @cash.useful?(money_i)
-      @cash.amount_money += money_i
+    if money.to_s =~ /^\d+$/ && @cash.useful?(money.to_i)
+      @cash.amount_money += money.to_i
       return
     else
       return money

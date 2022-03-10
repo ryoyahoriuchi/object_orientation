@@ -135,7 +135,7 @@ class VendingMachine
         puts "在庫状況は以下の通りです。"
       when 2
         #商品在庫確認
-        puts "在庫表示"
+        puts @juice_manager.stock_all
       when 3
         puts "売上は¥#{@accountant.sale_amount}です。"
       when 4
@@ -145,8 +145,3 @@ class VendingMachine
     end
   end
 end
-
-# if __FILE__ == $0
-#   vm = VendingMachine.new
-#   puts vm.start
-# end
