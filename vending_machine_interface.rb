@@ -145,8 +145,3 @@ class VendingMachine
     end
   end
 end
-
-# if __FILE__ == $0
-#   vm = VendingMachine.new
-#   puts vm.start
-# end
