@@ -27,6 +27,11 @@ class Accountant_Test < Minitest::Test
     assert_equal 0, @accountant.amount_money
   end
 
+  def test_return_money_when_incorrect_money_insert
+    assert_equal "100a", @accountant.insert_money("100a")
+    assert_equal 0, @accountant.amount_money
+  end
+
   def test_parchasable_when_enough_amount_money
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
