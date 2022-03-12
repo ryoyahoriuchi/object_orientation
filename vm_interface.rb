@@ -128,7 +128,6 @@ class VendingMachine
       puts "#{juice}を#{price}円で#{stock}本追加しました"
     end
   end
-
 end
 
 
