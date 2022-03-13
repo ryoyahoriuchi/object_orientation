@@ -32,7 +32,7 @@ class JuiceManager
   # 全商品の在庫確認
   def stock_all
     juices = @juices.map {|k, v| "#{k}: #{v[:stock]}本"}
-    juices.join(',')
+    juices.join(', ')
   end
 
   # 引数juiceの価格 / 戻り値：integer
@@ -41,20 +41,10 @@ class JuiceManager
     @juices[juice][:price] if self.exist?(juice)
   end
 
-  # 引数juiceが買えるかどうか / 戻り値：true,false
-  def purchasable?(juice,money)
-    juice = juice.to_sym
-    self.stock(juice) > 0 && self.price(juice) <= money if self.exist?(juice)
-  end
-
-  # 買えるドリンクのリスト / 戻り値：array 例：[:coke,:water]
-  def purchasable_list(money)
-    @juices.keys.select{|juice| purchasable?(juice,money)}
-  end
-
   # 在庫を１本減らす
   def retrieve(juice)
-    @juices[juice.to_sym][:stock] -= 1
+    juice = juice.to_sym
+    @juices[juice][:stock] -= 1 if stock(juice)&.> 0
   end
 
 end
