@@ -22,7 +22,7 @@ class VendingMachine
       else
         puts "1か2を選択下さい"
       end
-    end
+    end  
   end
 
   def self.choice
@@ -49,17 +49,21 @@ class VendingMachine
   def self.management
     while true
       puts "何をしますか？"
-      puts "1:商品追加、2:商品リスト表示、3:終了"
+      puts "1:商品追加、2:商品リスト表示、3:売上表示、4:終了"
       action = gets.chomp.to_s
       ["1", "2", "3"].include?(action)
       if action == "1"
         addition
       elsif action == "2"
-        puts @juice_manager.juices #ジュースリスト表示メソッドをここに入れる
+        juices = @juice_manager.stock_all.map {|k, v| "#{k}:#{v[:stock]}本"}
+        puts juices.join("、")
       elsif action == "3"
-        return puts "終了します。"
+        puts "売上: #{@accountant.amount_money}円"
+      elsif action == "4"
+        puts "終了します。"
+        exit
       else
-        puts "1～3を選択ください"
+        puts "1～4を選択ください"
       end
     end
   end
@@ -69,7 +73,7 @@ class VendingMachine
     puts "対応可能硬貨： #{Cash::MONEY}"
     money = gets.chomp
     a = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
-    puts "#{a}の不正投入がありました" if a
+    puts "#{a}の不正投入がありました" if a 
     # if 不正投入があったとき "#{money}の不正投入がありましたので返却します。"と書きたい
   end
 
@@ -91,27 +95,26 @@ class VendingMachine
   def self.addition
     puts "何のジュースを追加しますか？"
     juice = gets.chomp
-    puts "何円に設定しますか？"
-    pricing = true
-    while pricing
-      price = gets.to_i
-      if price == 0
-        puts "不正な金額です。数値で入力ください"
-      else
-        pricing = false
+    unless @juice_manager.exist?(juice)
+      while true
+        puts "何円に設定しますか？"
+        price = gets.chomp
+        break if (price =~ /\A[1-9][0-9]*\z/)
+        puts "不正な値です。数値で入力ください"
       end
     end
-    replenishment = true
-    puts "何本格納しますか？"
-    while replenishment
-      stock = gets.to_i
-      if stock == 0
-        puts "不正な本数です。数値で入力ください"
-      else
-        replenishment = false
-      end
+    while true
+      puts "何本格納しますか?"
+      stock = gets.chomp
+      break if (stock =~ /\A[1-9][0-9]*\z/)
+      puts "不正な値です。数値で入力ください"
     end
     @juice_manager.store(juice, price, stock)
-    puts "#{juice}を#{price}円で#{stock}本追加しました"
+    if @juice_manager.exist?(juice)
+      price = @juice_manager.price(juice)
+      puts "#{juice}を#{price}円で#{stock}本追加しました"
+    else
+      puts "#{juice}を#{price}円で#{stock}本追加しました"
+    end
   end
 end
