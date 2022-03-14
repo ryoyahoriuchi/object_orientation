@@ -37,8 +37,7 @@ class Accountant
 
   # 投入金額、在庫の点で、購入できるかboolean型で返す
   def purchasable?(juice)
-    @juice_manager.exist?(juice) &&
-@juice_manager.price(juice) <= @cash.amount_money && @juice_manager.stock(juice) > 0
+    @juice_manager.stock(juice) > 0 && @juice_manager.price(juice) <= @cash.amount_money
   end
 
   # 購入できる場合は、ジュースとお釣りを返す
@@ -54,7 +53,7 @@ class Accountant
 
   # 購入可能なドリンクをArrayで返す。
   def purchasable_list(money)
-    stock_list = @juice_manager.instance_variable_get(:@juices)
+    stock_list = @juice_manager.stock_all
     stock_list.keys.select{|juice| purchasable?(juice)}
   end
 end

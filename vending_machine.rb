@@ -22,7 +22,7 @@ class VendingMachine
       else
         puts "1か2を選択下さい"
       end
-    end  
+    end
   end
 
   def self.choice
@@ -69,7 +69,7 @@ class VendingMachine
     puts "対応可能硬貨： #{Cash::MONEY}"
     money = gets.chomp
     a = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
-    puts "#{a}の不正投入がありました" if a 
+    puts "#{a}の不正投入がありました" if a
     # if 不正投入があったとき "#{money}の不正投入がありましたので返却します。"と書きたい
   end
 

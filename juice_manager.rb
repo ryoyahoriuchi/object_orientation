@@ -1,8 +1,7 @@
 class JuiceManager
-
   # 初期設定
   def initialize
-    @juices = {coke: {price: 120, stock: 5},water: {price: 100, stock: 5},redbull: {price:200, stock: 5}}
+    @juices = {coke: {price: 120, stock: 5}, water: {price: 100, stock: 5}, redbull: {price:200, stock: 5}}
   end
 
   # 引数juiceの在庫を引数store_number格納する / 戻り値：hash
@@ -26,13 +25,12 @@ class JuiceManager
   # 引数juiceの在庫数 / 戻り値：integer
   def stock(juice)
     juice = juice.to_sym
-    @juices[juice][:stock] if self.exist?(juice)
+    @juices.dig(juice, :stock) || 0
   end
 
-  # 全商品の在庫確認 / 戻り値：String
+  # 全商品の在庫確認 / 戻り値：Hash
   def stock_all
-    juices = @juices.map {|k, v| "#{k}: #{v[:stock]}本"}
-    juices.join(', ')
+    @juices
   end
 
   # 引数juiceの価格 / 戻り値：integer or nil
