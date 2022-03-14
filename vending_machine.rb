@@ -11,14 +11,12 @@ class VendingMachine
     while true
       puts "あなたは何をするか決めてください"
       puts "1:購入、2:管理業務"
-      action = gets.chomp.to_s
-      if ["1", "2"].include?(action)
-        if action == "1"
-          choice
-        else
-          management
-        end
-        return
+      action = gets.chomp
+      case action
+      when "1"
+        break choice
+      when "2"
+        break management
       else
         puts "1か2を選択下さい"
       end
@@ -29,17 +27,15 @@ class VendingMachine
     while true
       puts "何をしますか？"
       puts "1:お金を投入、2:払い戻し、3:購入する"
-      puts "購入可能リスト"
-      p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
       action = gets.chomp.to_s
-      ["1", "2", "3"].include?(action)
-      if action == "1"
+      case action
+      when "1"
         insert
-      elsif action == "2"
+      when "2"
         puts "#{@accountant.amount_money}円を返却します。"
         return @accountant.refund_money
-      elsif action == "3"
-        return purchase
+      when "3"
+        break purchase
       else
         puts "1～3を選択ください"
       end
@@ -51,17 +47,17 @@ class VendingMachine
       puts "何をしますか？"
       puts "1:商品追加、2:商品リスト表示、3:売上表示、4:終了"
       action = gets.chomp.to_s
-      ["1", "2", "3"].include?(action)
-      if action == "1"
+      case action
+      when "1"
         addition
-      elsif action == "2"
-        juices = @juice_manager.stock_all.map {|k, v| "#{k}:#{v[:stock]}本"}
+      when "2"
+        juices = @juice_manager.stock_all.map {|k, v| "#{k}: #{v[:price]}円 #{v[:stock]}本"}
         puts juices.join("、")
-      elsif action == "3"
-        puts "売上: #{@accountant.amount_money}円"
-      elsif action == "4"
+      when "3"
+        puts "売上: #{@accountant.sale_amount}円"
+      when "4"
         puts "終了します。"
-        exit
+        break
       else
         puts "1～4を選択ください"
       end
@@ -70,16 +66,15 @@ class VendingMachine
 
   def self.insert
     puts "投入金額を決めてください。"
-    puts "対応可能硬貨： #{Cash::MONEY}"
+    puts "対応可能硬貨： #{Cash::MONEY.join(", ")}"
     money = gets.chomp
-    a = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
-    puts "#{a}の不正投入がありました" if a 
-    # if 不正投入があったとき "#{money}の不正投入がありましたので返却します。"と書きたい
+    object = @accountant.insert_money(money)
+    puts "#{object}は使用できません。返却します。" if object 
   end
 
   def self.purchase
     puts "購入可能リストは下記の通りです。"
-    p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
+    puts @accountant.purchasable_list(@accountant.amount_money).join(", ")
     puts "何を購入しますか？"
     juice = gets.chomp
     if @accountant.purchasable?(juice)
