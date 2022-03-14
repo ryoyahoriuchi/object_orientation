@@ -29,10 +29,7 @@ class VendingMachine
     while true
       puts "何をしますか？"
       puts "1:お金を投入、2:払い戻し、3:購入する"
-      # puts "購入可能リスト"
-      # p @accountant.purchasable_list(@accountant.amount_money).map(&:to_s)
       action = gets.chomp
-      # ["1", "2", "3"].include?(action)
       case action
       when "1"
         insert
