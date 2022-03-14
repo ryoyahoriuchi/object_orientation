@@ -32,28 +32,28 @@ class Accountant_Test < Minitest::Test
     assert_equal 0, @accountant.amount_money
   end
 
-  def test_parchasable_when_enough_amount_money
+  def test_purchasable_when_enough_amount_money
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
     assert @accountant.purchasable?(:coke)
   end
-  def test_parchasable_when_not_enough_amount_money
+  def test_purchasable_when_not_enough_amount_money
     @accountant.insert_money(100)
-    assert !@accountant.purchasable?(:coke)
+    refute @accountant.purchasable?(:coke)
   end
-  def test_parchasable_when_not_enough_juice
+  def test_purchasable_when_not_enough_juice
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
     5.times { @juice_manager.retrieve(:coke) }
-    assert !@accountant.purchasable?(:coke)
+    refute @accountant.purchasable?(:coke)
   end
-  def test_parchasable_when_not_such_juice
+  def test_purchasable_when_not_such_juice
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
-    assert !@accountant.purchasable?(:grapejuice)
+    refute @accountant.purchasable?(:grapejuice)
   end
 
-  def test_parchase_when_enough_ammuont_money_and_enough_juice
+  def test_purchase_when_enough_ammuont_money_and_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     3.times{ @accountant.insert_money(10) }
@@ -68,7 +68,7 @@ class Accountant_Test < Minitest::Test
     assert_equal 4, @juice_manager.stock(juice)
   end
 
-  def test_parchase_when_not_enough_ammuont_money_and_enough_juice
+  def test_purchase_when_not_enough_ammuont_money_and_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     # 購入前
@@ -82,7 +82,7 @@ class Accountant_Test < Minitest::Test
     assert_equal 5, @juice_manager.stock(juice)
   end
 
-  def test_parchase_when_enough_ammuont_money_and_not_enough_juice
+  def test_purchase_when_enough_ammuont_money_and_not_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
