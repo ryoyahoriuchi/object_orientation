@@ -24,7 +24,7 @@ class Accountant
       @cash.amount_money += money.to_i
       return
     else
-      return money
+      money
     end
   end
 
@@ -57,5 +57,4 @@ class Accountant
     stock_list = @juice_manager.instance_variable_get(:@juices)
     stock_list.keys.select{|juice| purchasable?(juice)}
   end
-
 end
