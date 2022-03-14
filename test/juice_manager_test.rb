@@ -29,11 +29,11 @@ class JuiceManagerTest < Minitest::Test
   end
   def test_stock_when_juice_does_not_exist
     # 戻り値がnilとなるが、0の方が良いのか？
-    assert_nil @jm.stock("orange")
+    assert_equal 0, @jm.stock("orange")
   end
 
   def test_stock_all
-    assert_equal "coke: 5本, water: 5本, redbull: 5本", @jm.stock_all
+    assert_equal @jm.instance_variable_get(:@juices), @jm.stock_all
   end
 
   # priceメソッドのテスト
