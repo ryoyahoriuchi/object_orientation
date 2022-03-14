@@ -91,22 +91,24 @@ class VendingMachine
     juice = gets.chomp
     puts "何円に設定しますか？"
     pricing = true
-    while pricing
-      price = gets.to_i
-      if price == 0
-        puts "不正な金額です。数値で入力ください"
+    while true
+      price = gets.chomp
+      if price =~ /\A[1-9]\d*\z/
+        price = price.to_i
+        break
       else
-        pricing = false
+        puts "不正な金額です。数値で入力ください"
       end
     end
     replenishment = true
     puts "何本格納しますか？"
     while replenishment
-      stock = gets.to_i
-      if stock == 0
-        puts "不正な本数です。数値で入力ください"
+      stock = gets.chomp
+      if stock =~ /\A[1-9]\d*\z/
+        stock = stock.to_i
+        break
       else
-        replenishment = false
+        puts "不正な本数です。数値で入力ください"
       end
     end
     @juice_manager.store(juice, price, stock)
