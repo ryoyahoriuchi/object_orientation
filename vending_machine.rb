@@ -11,7 +11,7 @@ class VendingMachine
     while true
       puts "あなたは何をするか決めてください"
       puts "1:購入、2:管理業務"
-      action = gets.chomp.to_s
+      action = gets.chomp
       if ["1", "2"].include?(action)
         if action == "1"
           choice
@@ -22,23 +22,24 @@ class VendingMachine
       else
         puts "1か2を選択下さい"
       end
-    end  
+    end
   end
 
   def self.choice
     while true
       puts "何をしますか？"
       puts "1:お金を投入、2:払い戻し、3:購入する"
-      puts "購入可能リスト"
-      p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
-      action = gets.chomp.to_s
-      ["1", "2", "3"].include?(action)
-      if action == "1"
+      # puts "購入可能リスト"
+      # p @accountant.purchasable_list(@accountant.amount_money).map(&:to_s)
+      action = gets.chomp
+      # ["1", "2", "3"].include?(action)
+      case action
+      when "1"
         insert
-      elsif action == "2"
+      when "2"
         puts "#{@accountant.amount_money}円を返却します。"
         return @accountant.refund_money
-      elsif action == "3"
+      when "3"
         return purchase
       else
         puts "1～3を選択ください"
@@ -66,16 +67,16 @@ class VendingMachine
 
   def self.insert
     puts "投入金額を決めてください。"
-    puts "対応可能硬貨： #{Cash::MONEY}"
+    puts "対応可能硬貨： #{Cash::MONEY.join(", ")}"
     money = gets.chomp
-    a = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
-    puts "#{a}の不正投入がありました" if a 
+    money = @accountant.insert_money(money) #+ "の投入がありました" #不正投入があったかどうかの分岐を書けない
+    puts "#{money}は使用できません。返却します。" if money
     # if 不正投入があったとき "#{money}の不正投入がありましたので返却します。"と書きたい
   end
 
   def self.purchase
     puts "購入可能リストは下記の通りです。"
-    p @accountant.purchasable_list(@accountant.amount_money).map{|i| i = i.to_s}
+    puts @accountant.purchasable_list(@accountant.amount_money).join(", ")
     puts "何を購入しますか？"
     juice = gets.chomp
     if @accountant.purchasable?(juice)
