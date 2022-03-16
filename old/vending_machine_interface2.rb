@@ -1,6 +1,6 @@
-require_relative "accountant"
-require_relative "cash"
-require_relative "juice_manager"
+require_relative "../accountant"
+require_relative "../cash"
+require_relative "../juice_manager"
 
 # VendingMachineでaccountant, juice_managerと同名のメソッドが使えるようにしています。実際には、メソッドから、大元のメソッドを呼び出しているだけです。
 class VendingMachine
