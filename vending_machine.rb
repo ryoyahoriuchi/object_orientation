@@ -48,7 +48,7 @@ class VendingMachine
       while true
         puts "何をしますか？"
         puts "1:商品追加、2:商品リスト表示、3:売上表示、4:終了"
-        action = gets.chomp.to_s
+        action = gets.chomp
         case action
         when "1"
           addition
