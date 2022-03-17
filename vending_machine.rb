@@ -28,7 +28,7 @@ class VendingMachine
     def choice
       while true
         puts "何をしますか？"
-        puts "1:お金を投入、2:払い戻し、3:購入する"
+        puts "1:お金を投入、2:払い戻し、3:購入する、4:商品一覧"
         action = gets.chomp
         case action
         when "1"
@@ -38,6 +38,8 @@ class VendingMachine
           return @accountant.refund_money
         when "3"
           break purchase
+        when "4"
+          index
         else
           puts "1～3を選択ください"
         end
@@ -119,6 +121,13 @@ class VendingMachine
       else
         puts "#{juice}を#{price}円で#{stock}本追加しました"
       end
+    end
+
+    def index
+      juices = @juice_manager.stock_all.map {|k, v| "#{k}: #{v[:price]}円"}
+      puts "商品一覧"
+      puts list = juices.join("、")
+      puts  "-" * list.size
     end
   end
 end
