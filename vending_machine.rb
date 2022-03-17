@@ -75,14 +75,20 @@ class VendingMachine
     end
 
     def purchase
-      puts "購入可能リストは下記の通りです。"
-      puts @accountant.purchasable_list(@accountant.amount_money).join(", ")
-      puts "何を購入しますか？"
-      juice = gets.chomp
-      if @accountant.purchasable?(juice)
-        change = @accountant.purchase(juice)
-        puts "#{juice}を購入しました"
-        puts "おつりは#{change}円です"
+      juices = @accountant.purchasable_list.map {|k, v| "#{k}: #{v}円"}
+      unless juices.empty?
+        puts "購入可能リストは下記の通りです。"
+        puts juices.join("、")
+        puts "何を購入しますか？"
+        juice = gets.chomp
+        if @accountant.purchasable?(juice)
+          change = @accountant.purchase(juice)
+          puts "#{juice}を購入しました"
+          puts "おつりは#{change}円です"
+        else
+          puts "購入できません"
+          choice
+        end
       else
         puts "購入できません"
         choice
