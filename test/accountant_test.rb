@@ -2,7 +2,6 @@ require "minitest/autorun"
 require_relative "../accountant.rb"
 require_relative "../cash.rb"
 require_relative "../juice_manager.rb"
-require_relative "../vending_machine.rb"
 
 class Accountant_Test < Minitest::Test
   def setup
@@ -53,7 +52,16 @@ class Accountant_Test < Minitest::Test
     refute @accountant.purchasable?(:grapejuice)
   end
 
-  def test_purchase_when_enough_ammuont_money_and_enough_juice
+  def test_purchasable_list_when_enough_amount_and_enough_juice
+    @accountant.insert_money(500)
+    assert_equal({:coke=>120, :water=>100, :redbull=>200}, @accountant.purchasable_list)
+  end
+
+  def test_purchasable_list_when_insufficient_amount_and_enough_juice
+    assert_equal({}, @accountant.purchasable_list)
+  end
+
+  def test_purchase_when_enough_amount_money_and_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     3.times{ @accountant.insert_money(10) }
@@ -68,7 +76,7 @@ class Accountant_Test < Minitest::Test
     assert_equal 4, @juice_manager.stock(juice)
   end
 
-  def test_purchase_when_not_enough_ammuont_money_and_enough_juice
+  def test_purchase_when_not_enough_amuont_money_and_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     # 購入前
@@ -82,7 +90,7 @@ class Accountant_Test < Minitest::Test
     assert_equal 5, @juice_manager.stock(juice)
   end
 
-  def test_purchase_when_enough_ammuont_money_and_not_enough_juice
+  def test_purchase_when_enough_amuont_money_and_not_enough_juice
     juice = :coke
     @accountant.insert_money(100)
     2.times{ @accountant.insert_money(10) }
