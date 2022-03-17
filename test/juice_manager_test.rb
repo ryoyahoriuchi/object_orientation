@@ -33,7 +33,7 @@ class JuiceManagerTest < Minitest::Test
   end
 
   def test_stock_all
-    assert_equal @jm.instance_variable_get(:@juices), @jm.stock_all
+    assert_equal({:coke=>{:price=>120, :stock=>5}, :water=>{:price=>100, :stock=>5}, :redbull=>{:price=>200, :stock=>5}}, @jm.stock_all)
   end
 
   # priceメソッドのテスト

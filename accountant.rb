@@ -51,9 +51,10 @@ class Accountant
     end
   end
 
-  # 購入可能なドリンクをArrayで返す。
-  def purchasable_list(money)
-    stock_list = @juice_manager.stock_all
-    stock_list.keys.select{|juice| purchasable?(juice)}
+  # 購入可能なドリンクをHashで返す。
+  def purchasable_list
+    list = {}
+    @juice_manager.stock_all.each{|key, val| list[key] = val[:price] if purchasable?(key)}
+    list
   end
 end
