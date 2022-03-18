@@ -1,6 +1,6 @@
-require_relative "./accountant.rb"
-require_relative "./juice_manager.rb"
-require_relative "./cash.rb"
+require_relative "./accountant"
+require_relative "./juice_manager"
+require_relative "./cash"
 
 class VendingMachine
   @cash = Cash.new
@@ -8,12 +8,12 @@ class VendingMachine
   @accountant = Accountant.new(@cash, @juice_manager)
 
   class << self
-    
+
     def start
       while true
         puts "あなたは何をするか決めてください"
         puts "1:購入、2:管理業務"
-        action = gets.chomp
+        action = gets.chomp.tr("０-９", "0-9")
         case action
         when "1"
           break choice
@@ -22,14 +22,16 @@ class VendingMachine
         else
           puts "1か2を選択下さい"
         end
-      end  
+      end
     end
+
+    private
 
     def choice
       while true
-        puts "何をしますか？"
+        puts "何をしますか？1～4を選択ください"
         puts "1:お金を投入、2:払い戻し、3:購入する、4:商品一覧"
-        action = gets.chomp
+        action = gets.chomp.tr("０-９", "0-9")
         case action
         when "1"
           insert
@@ -48,9 +50,9 @@ class VendingMachine
 
     def management
       while true
-        puts "何をしますか？"
+        puts "何をしますか？1～4を選択ください"
         puts "1:商品追加、2:商品リスト表示、3:売上表示、4:終了"
-        action = gets.chomp
+        action = gets.chomp.tr("０-９", "0-9")
         case action
         when "1"
           addition
@@ -71,9 +73,9 @@ class VendingMachine
     def insert
       puts "投入金額を決めてください。"
       puts "対応可能硬貨： #{Cash::MONEY.join(", ")}"
-      money = gets.chomp
+      money = gets.chomp.tr("０-９", "0-9")
       object = @accountant.insert_money(money)
-      puts "#{object}は使用できません。返却します。" if object 
+      puts "#{object}は使用できません。返却します。" if object
     end
 
     def purchase
@@ -82,7 +84,7 @@ class VendingMachine
         puts "購入可能リストは下記の通りです。"
         puts juices.join("、")
         puts "何を購入しますか？ジュース名を入力してください"
-        juice = gets.chomp
+        juice = gets.chomp.tr("０-９ａ-ｚＡ-Ｚ", "0-9a-zA-Z")
         if @accountant.purchasable?(juice)
           change = @accountant.purchase(juice)
           puts "#{juice}を購入しました"
@@ -99,28 +101,26 @@ class VendingMachine
 
     def addition
       puts "何のジュースを追加しますか？"
-      juice = gets.chomp
-      unless @juice_manager.exist?(juice)
+      juice = gets.chomp.tr("０-９ａ-ｚＡ-Ｚ", "0-9a-zA-Z")
+
+      get_value = ->(message){
         while true
-          puts "何円に設定しますか？"
-          price = gets.chomp
-          break if (price =~ /\A[1-9][0-9]*\z/)
-          puts "不正な値です。数値で入力ください"
+          puts message
+          value = gets.chomp.tr("０-９", "0-9")
+          break if value =~ /\A[1-9][0-9]*\z/
+          puts "不正な値です。数値で入力して下さい"
         end
-      end
-      while true
-        puts "何本格納しますか?"
-        stock = gets.chomp
-        break if (stock =~ /\A[1-9][0-9]*\z/)
-        puts "不正な値です。数値で入力ください"
-      end
-      @juice_manager.store(juice, price, stock)
+        value
+      }
+
       if @juice_manager.exist?(juice)
         price = @juice_manager.price(juice)
-        puts "#{juice}を#{price}円で#{stock}本追加しました"
       else
-        puts "#{juice}を#{price}円で#{stock}本追加しました"
+        price = get_value.call("何円に設定しますか？")
       end
+      stock = get_value.call("何本格納しますか？")
+      @juice_manager.store(juice, price, stock)
+      puts "#{juice}を#{price}円で#{stock}本追加し、在庫は#{@juice_manager.stock(juice)}本になりました"
     end
 
     def index
