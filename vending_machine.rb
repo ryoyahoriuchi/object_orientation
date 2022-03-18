@@ -41,7 +41,7 @@ class VendingMachine
         when "4"
           index
         else
-          puts "1～3を選択ください"
+          puts "1～4を選択ください"
         end
       end
     end
@@ -78,10 +78,10 @@ class VendingMachine
 
     def purchase
       juices = @accountant.purchasable_list.map {|k, v| "#{k}: #{v}円"}
-      unless juices.empty?
+      if !juices.empty?
         puts "購入可能リストは下記の通りです。"
         puts juices.join("、")
-        puts "何を購入しますか？"
+        puts "何を購入しますか？ジュース名を入力してください"
         juice = gets.chomp
         if @accountant.purchasable?(juice)
           change = @accountant.purchase(juice)
