@@ -113,11 +113,12 @@ class VendingMachine
         value
       }
 
-      if @juice_manager.exist?(juice)
-        price = @juice_manager.price(juice)
-      else
-        price = get_value.call("何円に設定しますか？")
-      end
+      price =
+        if @juice_manager.exist?(juice)
+          @juice_manager.price(juice)
+        else
+          get_value.call("何円に設定しますか？")
+        end
       stock = get_value.call("何本格納しますか？")
       @juice_manager.store(juice, price, stock)
       puts "#{juice}を#{price}円で#{stock}本追加し、在庫は#{@juice_manager.stock(juice)}本になりました"
