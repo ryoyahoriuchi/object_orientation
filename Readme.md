@@ -64,6 +64,9 @@
 - 3.2.1 お金を管理 Cash
 - 3.2.2 ジュースを管理　JuiceManager
 - 3.2.3 会計　Accountant
+- 3.2.3 インターフェース　VendingMachine
+
+![image](https://user-images.githubusercontent.com/97021497/158950712-4429aa1c-10f9-4c09-b216-b5bb99fb8008.png)
 
 ### 3.3 こだわりの実装ポイント
 - VendingMachineを対話型にしました。
