@@ -1,7 +1,7 @@
-require_relative "./accountant"
-require_relative "./juice_manager"
-require_relative "./cash"
-require_relative "./color"
+require_relative "accountant"
+require_relative "juice_manager"
+require_relative "cash"
+require_relative "color"
 
 class VendingMachine
   @cash = Cash.new
@@ -92,11 +92,11 @@ class VendingMachine
           puts "#{juice}を購入しました。"
           puts "おつりは#{change}円です。"
         else
-          puts "購入できません。"
+          puts "購入可能リストにないジュースです。"
           choice
         end
       else
-        puts "購入できません。"
+        puts "購入可能なジュースはありません。"
         choice
       end
     end
